@@ -1,17 +1,33 @@
-#include<Wire.h>
+#include <Wire.h>
 
-const int MPU_addr=0x68; int16_t AcX,AcY,AcZ,Tmp,GyX,GyY,GyZ;
-
+const int MPU_addr=0x68;
 int minVal=265; int maxVal=402;
 
-double x; double y; double z;
+// Insert calibration values.
+int16_t AcX = 0; int16_t AcY = 0; int16_t AcZ = 16382;
+int16_t GyX = 0; int16_t GyY = 0; int16_t GyZ = 0;
 
-void setup(){ Wire.begin(); Wire.beginTransmission(MPU_addr); Wire.write(0x6B); Wire.write(0); Wire.endTransmission(true); Serial.begin(9600); } void loop(){ Wire.beginTransmission(MPU_addr); Wire.write(0x3B); Wire.endTransmission(false); Wire.requestFrom(MPU_addr,14,true); AcX=Wire.read()<<8|Wire.read(); AcY=Wire.read()<<8|Wire.read(); AcZ=Wire.read()<<8|Wire.read(); int xAng = map(AcX,minVal,maxVal,-90,90); int yAng = map(AcY,minVal,maxVal,-90,90); int zAng = map(AcZ,minVal,maxVal,-90,90);
+void setup()
+{
+    Wire.begin(); Wire.beginTransmission(MPU_addr); Wire.write(0x6B); Wire.write(0); Wire.endTransmission(true); Serial.begin(9600);
+}
 
-x= RAD_TO_DEG * (atan2(-yAng, -zAng)+PI); y= RAD_TO_DEG * (atan2(-xAng, -zAng)+PI); z= RAD_TO_DEG * (atan2(-yAng, -xAng)+PI);
+void loop()
+{
+    // Wire operations.
+    Wire.beginTransmission(MPU_addr); Wire.write(0x3B); Wire.endTransmission(false);
+    Wire.requestFrom(MPU_addr,14,true); AcX=Wire.read()<<8|Wire.read(); AcY=Wire.read()<<8|Wire.read(); AcZ=Wire.read()<<8|Wire.read();
+    int xAng = map(AcX,minVal,maxVal,-90,90); int yAng = map(AcY,minVal,maxVal,-90,90); int zAng = map(AcZ,minVal,maxVal,-90,90);
 
-Serial.print("AngleX= "); Serial.println(x);
+    // Calculate results.
+    double x = RAD_TO_DEG * (atan2(-yAng, -zAng)+PI);
+    double y = RAD_TO_DEG * (atan2(-xAng, -zAng)+PI);
+    double z = RAD_TO_DEG * (atan2(-yAng, -xAng)+PI);
 
-Serial.print("AngleY= "); Serial.println(y);
-
-Serial.print("AngleZ= "); Serial.println(z); Serial.println("-----------------------------------------"); delay(400); }
+    // Print results.
+    Serial.print("AngleX= "); Serial.println(x);
+    Serial.print("AngleY= "); Serial.println(y);
+    Serial.print("AngleZ= "); Serial.println(z);
+    Serial.println("-----------------------------------------");
+    delay(400);
+}
