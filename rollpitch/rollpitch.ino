@@ -38,7 +38,7 @@ GyZoff = 0;
 //read accel data
 AcX=(Wire.read()<<8|Wire.read()) + AcXoff;
 AcY=(Wire.read()<<8|Wire.read()) + AcYoff;
-AcZ=(Wire.read()<<8|Wire.read()) + AcYoff;
+AcZ=(Wire.read()<<8|Wire.read()) + AcZoff;
 
 //read temperature data
 temp=(Wire.read()<<8|Wire.read()) + toff;
