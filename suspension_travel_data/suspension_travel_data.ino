@@ -6,7 +6,8 @@
 //setup some global variables
 int dist, val, potPin;
 char address = 0x08; // Run I2C Scanner to get address
-const int chipSelect = 4;
+const int chipSelect = 10;
+File myFile;
 
 //run chip setup
 void setup() {
@@ -18,12 +19,32 @@ void setup() {
 
 //main loop
 void loop() {
-  tof_read();
-  sd_write("tof.txt", val);
-  linear_read(); 
-  sd_write("linear_pot.txt", dist);
   
-  delay(10);
+  tof_read();
+  myFile = SD.open("tof.txt", FILE_WRITE);
+  if(myFile){
+    Serial.print("Writing to tof.txt");
+    myFile.println(dist);
+    myFile.close();
+    Serial.println("done");
+  }
+  else{
+    Serial.println("error opening tof.txt");
+  }
+  
+  linear_read();
+  myFile = SD.open("linear.txt", FILE_WRITE);
+  if(myFile){
+    Serial.print("Writing to linear.txt");
+    myFile.println(val);
+    myFile.close();
+    Serial.println("done");
+  }
+  else{
+    Serial.println("error opening linear.txt");
+  }
+  
+  delay(500);
 }
 
 //setup the sd card
@@ -35,7 +56,7 @@ void sd_setup(){
 
   if(!SD.begin(chipSelect)){
     Serial.println("Card failed, or not present");
-    while(1);
+    return;
   }
   Serial.println("Card initiliased");
 
@@ -53,30 +74,4 @@ void tof_read(){
 void linear_read(){
   val = analogRead(potPin);
   Serial.println(val);
-}
-
-void sd_write(String file_name, int sensor_val){
-
-  String data = "";
-
-  for(int analogPin = 0; analogPin <3; analogPin++){
-    data += String(sensor_val);
-    if(analogPin < 2){
-      data += ",";
-    }
-  }
-
-  File file = SD.open(file_name, FILE_WRITE);
-
-  if (file) {
-    file.println(data);
-    file.close();
-    // print to the serial port too:
-    Serial.println(data);
-  }
-  // if the file isn't open, pop up an error:
-  else {
-    Serial.println("error opening data file");
-  }
-
 }
