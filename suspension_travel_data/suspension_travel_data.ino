@@ -4,7 +4,7 @@
 #include<SD.h>
 
 //setup some global variables
-int dist, val, potPin;
+int dist, val, potPin = 2;
 char address = 0x08; // Run I2C Scanner to get address
 const int chipSelect = 10;
 File myFile;
@@ -23,7 +23,7 @@ void loop() {
   tof_read();
   myFile = SD.open("tof.txt", FILE_WRITE);
   if(myFile){
-    Serial.print("Writing to tof.txt");
+    Serial.println("Writing to tof.txt");
     myFile.println(dist);
     myFile.close();
     Serial.println("done");
@@ -35,7 +35,7 @@ void loop() {
   linear_read();
   myFile = SD.open("linear.txt", FILE_WRITE);
   if(myFile){
-    Serial.print("Writing to linear.txt");
+    Serial.println("Writing to linear.txt");
     myFile.println(val);
     myFile.close();
     Serial.println("done");
@@ -44,7 +44,7 @@ void loop() {
     Serial.println("error opening linear.txt");
   }
   
-  delay(500);
+  delay(25);
 }
 
 //setup the sd card
