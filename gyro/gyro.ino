@@ -2,10 +2,7 @@
 
 const int MPU_addr=0x68;
 int minVal=265; int maxVal=402;
-
-// Insert calibration values.
-int16_t AcX = 0; int16_t AcY = 0; int16_t AcZ = 16382;
-int16_t GyX = 0; int16_t GyY = 0; int16_t GyZ = 0;
+int16_t AcX, AcY, AcZ;
 
 void setup()
 {

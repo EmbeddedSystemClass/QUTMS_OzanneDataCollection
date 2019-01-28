@@ -1,7 +1,7 @@
 #include<Wire.h>
 #include <math.h>
 const int MPU=0x68;
-int16_t AcX,AcY,AcZ,Tmp,GyX,GyY,GyZ;
+int16_t AcX,AcY,AcZ,GyX,GyY,GyZ;
 double pitch,roll;
 
 void setup(){
@@ -23,22 +23,22 @@ int temp,toff;
 double t,tx,tf;
 
 //Acceleration data correction
-AcXoff = -950;
-AcYoff = -300;
-AcZoff = 0;
+AcXoff = 0;
+AcYoff = 0;
+AcZoff = 16384;
 
 //Temperature correction
 toff = -1600;
 
 //Gyro correction
-GyXoff = 480;
-GyYoff = 170;
-GyZoff = 210;
+GyXoff = 0;
+GyYoff = 0;
+GyZoff = 0;
 
 //read accel data
 AcX=(Wire.read()<<8|Wire.read()) + AcXoff;
 AcY=(Wire.read()<<8|Wire.read()) + AcYoff;
-AcZ=(Wire.read()<<8|Wire.read()) + AcYoff;
+AcZ=(Wire.read()<<8|Wire.read()) + AcZoff;
 
 //read temperature data
 temp=(Wire.read()<<8|Wire.read()) + toff;
